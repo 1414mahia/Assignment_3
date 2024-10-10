@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-center pt-5">
+        {% if data %}
+            <div class="row">
+                {% for post in data %}
+                <div class="col-sm-6">  <!-- Adjusted column size for better layout -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.task_description }}</p>
+                            <h3>Task Assigned: {{ post.Task_Assign_Date }}</h3><br>
+                            <small>Status: {{ post.is_completed|yesno:"Completed,In Progress" }}</small><br>
+                            <small>Categories:
+                                {% for category in post.categories.all %}
+                                    <button class="btn btn-warning btn-sm m-1">
+                                        {{ category.category_name }}  <!-- Ensure you're using the correct field name -->
+                                    </button>
+                                {% endfor %}
+                            </small>
+                            <div class="mt-3">
+                                {% if not post.is_completed %}
+                                    <a href="{% url 'edit' post.id %}" class="btn btn-primary">Edit</a>
+                                    <a href="{% url 'delete' post.id %}" class="btn btn-danger">Delete</a>
+                                {% else %}
+                                    <span class="text-success">Completed</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No tasks available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+ <!--
+              post.is_completed: This is a boolean field  It represents whether the task is completed (True) or still in progress (False).
+yesno:"Completed,In Progress": The yesno filter takes two values separated by a comma:
+The first value ("Completed") is what will be displayed if post.is_completed is True.
+The second value ("In Progress") is what will be displayed if post.is_completed is False.
+            -->
